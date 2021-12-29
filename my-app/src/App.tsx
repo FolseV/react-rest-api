@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "./App.css";
+import Element from "./components";
 
 interface ValueType {
   value: string;
@@ -15,7 +16,7 @@ function App() {
   const [data, setData] = useState<DataType>();
   const [inputData, setInputData] = useState("");
 
-  const createElement = (input: string) => {
+  const createElement = useCallback((input: string) => {
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -28,16 +29,7 @@ function App() {
       .then((response) => response.json())
       .then((data) => console.log(data))
       .catch((error) => console.log(error));
-  };
-
-  const removeElement = (id: string) => {
-    fetch(`https://crudl-ffff6-default-rtdb.europe-west1.firebasedatabase.app/test/${id}.json`, {
-      method: "DELETE",
-    })
-      .then((response) => response.json())
-      .then((data) => console.log(data))
-      .catch((error) => console.log(error));
-  };
+  }, []);
 
   useEffect(() => {
     fetch("https://crudl-ffff6-default-rtdb.europe-west1.firebasedatabase.app/test.json", {
@@ -50,7 +42,7 @@ function App() {
         return setData(data);
       })
       .catch((error) => console.log(error));
-  }, [createElement, removeElement]);
+  }, [createElement]);
 
   const dataArr = [];
   let keys = data && Object.keys(data);
@@ -58,24 +50,13 @@ function App() {
     dataArr.push(data && data[Object.keys(data)[index]].value);
   }
 
-  console.log(dataArr);
-  // console.log(data ? data[Object.keys(data)[0]].value : "none");
-  // console.log(data ? Object.keys(data).map((key: any) => [Number(key), data[key]]) : "none");
-  // console.log(Object.keys(data));
-  // var result = Object.keys(data).map((key: any) => [Number(key), data[key]]);
-  // console.log(Object.keys(result));
   return (
     <div className="App">
       <h1>Hello</h1>
       {dataArr.map((el, index) => {
         return (
           <div className="item" key={index}>
-            <h3 className="item_text" key={index}>
-              {el}{" "}
-            </h3>
-            <button onClick={() => removeElement(data ? Object.keys(data)[index] : "none")}>
-              Remove
-            </button>
+            <Element data={data} el={el} index={index} />
           </div>
         );
       })}
