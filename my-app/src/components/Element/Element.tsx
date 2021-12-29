@@ -14,6 +14,7 @@ interface Props {
   data: DataType | undefined;
   el: ValueType | undefined;
   index: number;
+  onReRender: () => void;
 }
 
 const Element: React.FC<Props> = (props) => {
@@ -44,6 +45,9 @@ const Element: React.FC<Props> = (props) => {
       .then((response) => response.json())
       .then((data) => console.log(data))
       .catch((error) => console.log(error));
+    window.setTimeout(() => {
+      props.onReRender();
+    }, 1000);
   };
 
   const onStartEdit = useCallback(() => {
@@ -55,8 +59,11 @@ const Element: React.FC<Props> = (props) => {
       console.log(editElement);
       updateElement(editElement, id);
       setToggleEdit({ ...toggleEdit, edit: false });
+      window.setTimeout(() => {
+        props.onReRender();
+      }, 1000);
     },
-    [toggleEdit, editElement]
+    [toggleEdit, editElement, props]
   );
 
   const onChangeElement = useCallback(
@@ -65,6 +72,7 @@ const Element: React.FC<Props> = (props) => {
     },
     [setEditElement]
   );
+
   return (
     <>
       {!toggleEdit.edit && (
