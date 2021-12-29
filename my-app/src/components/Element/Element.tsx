@@ -1,4 +1,6 @@
 import React, { ChangeEvent, useCallback, useState } from "react";
+import { Link } from "react-router-dom";
+
 interface ValueType {
   value: string;
 }
@@ -33,28 +35,7 @@ const Element: React.FC<Props> = (props) => {
     );
     const data = await response.json();
     console.log(data);
-    //   fetch(
-    //     `https://crudl-ffff6-default-rtdb.europe-west1.firebasedatabase.app/test/${id}.json`,
-    //     requestOptions
-    //   )
-    //     .then((response) => response.json())
-    //     .then((data) => console.log(data))
-    //     .catch((error) => console.log(error));
   }
-  //   const updateElement = (newText: string, id: string) => {
-  //     const requestOptions = {
-  //       method: "PUT",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({ value: newText }),
-  //     };
-  //     fetch(
-  //       `https://crudl-ffff6-default-rtdb.europe-west1.firebasedatabase.app/test/${id}.json`,
-  //       requestOptions
-  //     )
-  //       .then((response) => response.json())
-  //       .then((data) => console.log(data))
-  //       .catch((error) => console.log(error));
-  //   };
 
   const removeElement = (id: string) => {
     fetch(`https://crudl-ffff6-default-rtdb.europe-west1.firebasedatabase.app/test/${id}.json`, {
@@ -73,7 +54,6 @@ const Element: React.FC<Props> = (props) => {
     (id: string) => {
       console.log(editElement);
       updateElement(editElement, id);
-      updateElement(editElement, id);
       setToggleEdit({ ...toggleEdit, edit: false });
     },
     [toggleEdit, editElement]
@@ -87,7 +67,6 @@ const Element: React.FC<Props> = (props) => {
   );
   return (
     <>
-      <button onClick={() => console.log(editElement)}>TEST</button>
       {!toggleEdit.edit && (
         <>
           <h3 className="item_text">{props.el}</h3>
@@ -109,8 +88,9 @@ const Element: React.FC<Props> = (props) => {
       >
         Remove
       </button>
+      <Link to={`/${props.data ? Object.keys(props.data)[props.index] : "none"}`}> READ </Link>
     </>
   );
 };
 
-export default Element;
+export default React.memo(Element);

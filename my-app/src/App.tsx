@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
-import Element from "./components";
+import Element from "./components/Element";
 
 interface ValueType {
   value: string;
@@ -11,12 +11,11 @@ interface DataType {
     [index: string]: ValueType;
   };
 }
-
 function App() {
   const [data, setData] = useState<DataType>();
   const [inputData, setInputData] = useState("");
 
-  const createElement = useCallback((input: string) => {
+  const createElement = (input: string) => {
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -29,7 +28,7 @@ function App() {
       .then((response) => response.json())
       .then((data) => console.log(data))
       .catch((error) => console.log(error));
-  }, []);
+  };
 
   useEffect(() => {
     fetch("https://crudl-ffff6-default-rtdb.europe-west1.firebasedatabase.app/test.json", {
@@ -42,7 +41,10 @@ function App() {
         return setData(data);
       })
       .catch((error) => console.log(error));
-  }, [createElement]);
+    return function cleanup() {
+      setData(undefined);
+    };
+  }, []);
 
   const dataArr = [];
   let keys = data && Object.keys(data);
